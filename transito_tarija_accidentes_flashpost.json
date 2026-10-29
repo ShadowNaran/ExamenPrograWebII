@@ -1,0 +1,353 @@
+{
+  "info": {
+    "name": "API Tránsito Tarija - Gestión de Accidentes",
+    "_postman_id": "f8a192b3-d4c5-4a67-9e01-23456789abcd",
+    "description": "Colección completa para la API REST de registro, peritaje y seguimiento de accidentes de tránsito en el Municipio de Tarija (Organismo Operativo de Tránsito). Compatible con Flashpost / Postman v2.1.0.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Oficiales",
+      "item": [
+        {
+          "name": "Registrar Nuevo Oficial / Perito",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Juan Carlos\",\n  \"apellidos\": \"Torrez Miranda\",\n  \"grado\": \"Sargento Primero\",\n  \"numeroEscalafon\": \"ESC-81204\",\n  \"cargo\": \"Investigador Especial\",\n  \"unidad\": \"Divisi\\u00f3n Accidentes\",\n  \"activo\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/oficiales",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "oficiales"
+              ]
+            },
+            "description": "Alta de personal policial asignado al sistema de accidentes."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accidentes (Siniestros)",
+      "item": [
+        {
+          "name": "Listar Accidentes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accidentes?distrito=Distrito 1&gravedad=con_heridos&fechaDesde=2026-10-01",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accidentes"
+              ],
+              "query": [
+                {
+                  "key": "distrito",
+                  "value": "Distrito 1",
+                  "description": "Filtro por distrito municipal de Tarija"
+                },
+                {
+                  "key": "gravedad",
+                  "value": "con_heridos",
+                  "description": "solo_danos, con_heridos, fatal"
+                },
+                {
+                  "key": "fechaDesde",
+                  "value": "2026-10-01",
+                  "description": "Fecha inicial de reporte"
+                }
+              ]
+            },
+            "description": "Lista paginada de siniestros viales con filtros de geolocalización y severidad."
+          }
+        },
+        {
+          "name": "Obtener Detalle del Accidente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accidentes/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accidentes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del accidente"
+                }
+              ]
+            },
+            "description": "Recupera la ficha completa con vehículos, personas involucradas y estado legal."
+          }
+        },
+        {
+          "name": "Registrar Nuevo Accidente (Parte Inicial)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigoCaso\": \"TRJ-ACC-2026-0842\",\n  \"fechaHora\": \"2026-10-28T14:35:00Z\",\n  \"tipoAccidente\": \"Colisi\\u00f3n Frontal\",\n  \"gravedad\": \"con_heridos\",\n  \"zonaBarrio\": \"Barrio San Mart\\u00edn\",\n  \"direccionReferencia\": \"Av. Las Am\\u00e9ricas y C. Juan Misael Saracho\",\n  \"distrito\": \"Distrito 1\",\n  \"latitud\": -21.535492,\n  \"longitud\": -64.729918,\n  \"condicionClimatica\": \"Despejado\",\n  \"estadoCalzada\": \"Seca\",\n  \"oficialAsignadoId\": 1,\n  \"observaciones\": \"Uno de los conductores no respet\\u00f3 la se\\u00f1al de pare en intersecci\\u00f3n semaforizada intermitente.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/accidentes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accidentes"
+              ]
+            },
+            "description": "Crea el parte preliminar de un accidente vial ocurrido en la jurisdicción de Tarija."
+          }
+        },
+        {
+          "name": "Actualizar Estado Procesal",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estadoCaso\": \"remitido_fiscalia\",\n  \"juzgadoOInstitucion\": \"Fiscal\\u00eda Departamental de Tarija - Divisi\\u00f3n Delitos Contra la Vida\",\n  \"numeroCuadernoInvestigacion\": \"IANUS-2026-99381\",\n  \"motivoPase\": \"Alcoholemia positiva y lesiones graves a peat\\u00f3n\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/accidentes/:id/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accidentes",
+                ":id",
+                "estado"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Modifica el estatus legal del expediente (en_investigacion, conciliado, remitido_fiscalia, cerrado)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehículos Involucrados",
+      "item": [
+        {
+          "name": "Asociar Vehículo a un Accidente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accidenteId\": 1,\n  \"placa\": \"3492-XTL\",\n  \"marca\": \"Toyota\",\n  \"modelo\": \"Corolla\",\n  \"tipoVehiculo\": \"Autom\\u00f3vil Particular\",\n  \"color\": \"Plata Met\\u00e1lico\",\n  \"numeroChasis\": \"2T1BR32E85C129031\",\n  \"soatVigente\": true,\n  \"aseguradora\": \"Seguros Alianza\",\n  \"descripcionDanios\": \"Deformaci\\u00f3n severa del paragolpes delantero, rotura de \\u00f3ptica izquierda y radiador perforado.\",\n  \"remolcadoA\": \"Dep\\u00f3sito Policial Tr\\u00e1nsito Morros Blancos\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vehiculos-involucrados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehiculos-involucrados"
+              ]
+            },
+            "description": "Registra las características, seguro SOAT y daños del vehículo protagonista."
+          }
+        },
+        {
+          "name": "Listar Vehículos de un Caso",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/accidentes/:id/vehiculos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accidentes",
+                ":id",
+                "vehiculos"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Devuelve todos los motorizados involucrados en un accidente dado."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Personas y Lesionados",
+      "item": [
+        {
+          "name": "Registrar Persona Involucrada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accidenteId\": 1,\n  \"vehiculoId\": 1,\n  \"nombres\": \"Rodrigo\",\n  \"apellidos\": \"Guti\\u00e9rrez Vaca\",\n  \"ci\": \"5829103 TJ\",\n  \"telefono\": \"+59172981234\",\n  \"rol\": \"conductor\",\n  \"numeroLicencia\": \"5829103-TJ\",\n  \"categoriaLicencia\": \"C\",\n  \"gradoAlcoholemiaGral\": 0.0,\n  \"estadoAlcoholemia\": \"sobrio\",\n  \"estadoSalud\": \"lesionado_leve\",\n  \"centroMedicoTraslado\": \"Hospital Regional San Juan de Dios (HRSJD)\",\n  \"diagnosticoPreliminar\": \"Policontuso con contusi\\u00f3n en hombro derecho\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/personas-involucradas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "personas-involucradas"
+              ]
+            },
+            "description": "Registra conductores, pasajeros, peatones o ciclistas afectados en el siniestro."
+          }
+        },
+        {
+          "name": "Actualizar Prueba de Alcoholemia / Dosaje",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gradoAlcoholemiaGral\": 1.45,\n  \"estadoAlcoholemia\": \"positivo\",\n  \"numeroActaDosaje\": \"DOS-TJ-2026-441\",\n  \"laboratorio\": \"Laboratorio Toxicol\\u00f3gico IDIF Tarija\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/personas-involucradas/:id/alcoholemia",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "personas-involucradas",
+                ":id",
+                "alcoholemia"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Consigna los resultados oficiales de la prueba de alcohotest o análisis de sangre."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Peritajes e Informes Técnicos",
+      "item": [
+        {
+          "name": "Registrar Dictamen Técnico de Peritaje",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accidenteId\": 1,\n  \"peritoId\": 1,\n  \"fechaPeritaje\": \"2026-10-28\",\n  \"velocidadEstimadaImpactoKmh\": 68.5,\n  \"huellaFrenadoMetros\": 18.4,\n  \"factorDeterminante\": \"Exceso de velocidad e inobservancia a la se\\u00f1al\\u00e9tica de prioridad vial\",\n  \"conclusiones\": \"El veh\\u00edculo con placa 3492-XTL ingres\\u00f3 al cruce vial superando el l\\u00edmite reglamentario de 40 km/h en zona urbana, perdiendo la adherencia al realizar la maniobra evasiva.\",\n  \"croquisUrl\": \"https://storage.transito-tarija.gob.bo/croquis/TRJ-ACC-2026-0842.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/peritajes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "peritajes"
+              ]
+            },
+            "description": "Almacena las conclusiones de la División Especial de Peritajes Técnicos de Tránsito."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estadísticas y Puntos Críticos",
+      "item": [
+        {
+          "name": "Mapa de Calor / Zonas de Mayor Incidencia",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/estadisticas/puntos-criticos?anio=2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "estadisticas",
+                "puntos-criticos"
+              ],
+              "query": [
+                {
+                  "key": "anio",
+                  "value": "2026"
+                }
+              ]
+            },
+            "description": "Retorna coordenadas geográficas agrupadas por frecuencia de accidentes en avenidas y puentes de Tarija (ej. Av. Panamericana, Av. Integración, Rotonda del Moto Méndez)."
+          }
+        }
+      ]
+    }
+  ]
+}
